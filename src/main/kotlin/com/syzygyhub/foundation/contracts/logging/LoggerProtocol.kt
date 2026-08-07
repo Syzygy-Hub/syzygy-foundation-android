@@ -1,5 +1,7 @@
 package com.syzygyhub.foundation.contracts.logging
 
+import com.syzygyhub.foundation.primitives.time.SyzygyTimestamp
+
 /**
  * Contract for structured logging.
  *
@@ -15,7 +17,14 @@ interface LoggerProtocol {
         message: String,
         metadata: Map<String, String> = emptyMap(),
     ) {
-        log(LogEntry(LogLevel.DEBUG, message, com.syzygyhub.foundation.primitives.time.SyzygyTimestamp.now(), metadata))
+        log(
+            LogEntry(
+                LogLevel.DEBUG,
+                message,
+                SyzygyTimestamp.now(),
+                metadata,
+            ),
+        )
     }
 
     /** Records a [LogLevel.INFO] message. */
@@ -23,7 +32,14 @@ interface LoggerProtocol {
         message: String,
         metadata: Map<String, String> = emptyMap(),
     ) {
-        log(LogEntry(LogLevel.INFO, message, com.syzygyhub.foundation.primitives.time.SyzygyTimestamp.now(), metadata))
+        log(
+            LogEntry(
+                LogLevel.INFO,
+                message,
+                SyzygyTimestamp.now(),
+                metadata,
+            ),
+        )
     }
 
     /** Records a [LogLevel.WARNING] message. */
@@ -31,7 +47,14 @@ interface LoggerProtocol {
         message: String,
         metadata: Map<String, String> = emptyMap(),
     ) {
-        log(LogEntry(LogLevel.WARNING, message, com.syzygyhub.foundation.primitives.time.SyzygyTimestamp.now(), metadata))
+        log(
+            LogEntry(
+                LogLevel.WARNING,
+                message,
+                SyzygyTimestamp.now(),
+                metadata,
+            ),
+        )
     }
 
     /** Records a [LogLevel.ERROR] message with an optional [Throwable]. */
@@ -44,7 +67,7 @@ interface LoggerProtocol {
             LogEntry(
                 LogLevel.ERROR,
                 message,
-                com.syzygyhub.foundation.primitives.time.SyzygyTimestamp.now(),
+                SyzygyTimestamp.now(),
                 metadata,
                 error,
             ),
@@ -61,7 +84,7 @@ interface LoggerProtocol {
             LogEntry(
                 LogLevel.CRITICAL,
                 message,
-                com.syzygyhub.foundation.primitives.time.SyzygyTimestamp.now(),
+                SyzygyTimestamp.now(),
                 metadata,
                 error,
             ),
