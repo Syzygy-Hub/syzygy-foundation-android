@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.syzygyhub.foundation.SyzygyVersionTests" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-08-07T19:31:35.917Z" hostname="RentOcarts-MacBook-Air.local" time="0.004">
+  <properties/>
+  <testcase name="1 5 0 is greater than 1 4 9()" classname="com.syzygyhub.foundation.SyzygyVersionTests" time="0.001"/>
+  <testcase name="1 0 0 equals 1 0 0()" classname="com.syzygyhub.foundation.SyzygyVersionTests" time="0.0"/>
+  <testcase name="current version matches release()" classname="com.syzygyhub.foundation.SyzygyVersionTests" time="0.003"/>
+  <testcase name="2 0 0 is greater than 1 9 9()" classname="com.syzygyhub.foundation.SyzygyVersionTests" time="0.0"/>
+  <testcase name="toString produces major dot minor dot patch()" classname="com.syzygyhub.foundation.SyzygyVersionTests" time="0.0"/>
+  <testcase name="toString produces major dot minor dot patch dash prerelease when prerelease set()" classname="com.syzygyhub.foundation.SyzygyVersionTests" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

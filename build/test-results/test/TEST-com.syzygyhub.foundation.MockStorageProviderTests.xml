@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.syzygyhub.foundation.MockStorageProviderTests" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-08-07T19:31:35.899Z" hostname="RentOcarts-MacBook-Air.local" time="0.002">
+  <properties/>
+  <testcase name="remove deletes value()" classname="com.syzygyhub.foundation.MockStorageProviderTests" time="0.001"/>
+  <testcase name="clear empties all storage()" classname="com.syzygyhub.foundation.MockStorageProviderTests" time="0.0"/>
+  <testcase name="set then get returns correct value()" classname="com.syzygyhub.foundation.MockStorageProviderTests" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
