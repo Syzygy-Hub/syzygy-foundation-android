@@ -448,7 +448,7 @@ class SyzygyVersionTests {
 
     @Test
     fun `current version matches release`() {
-        assertEquals("1.0.0", SyzygyVersion.current.toString())
+        assertEquals("1.1.0", SyzygyVersion.current.toString())
     }
 }
 

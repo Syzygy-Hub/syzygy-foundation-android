@@ -34,6 +34,6 @@ data class SyzygyVersion(
 
     companion object {
         /** The current Foundation library version. */
-        val current: SyzygyVersion = SyzygyVersion(1, 0, 0)
+        val current: SyzygyVersion = SyzygyVersion(1, 1, 0)
     }
 }
