@@ -1,17 +1,47 @@
-[![Android](https://img.shields.io/badge/Android-Kotlin-7F77DD?style=flat)](https://developer.android.com/) [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-1D9E75?logo=kotlin&logoColor=white&style=flat)](https://kotlinlang.org) [![CI](https://img.shields.io/github/actions/workflow/status/Syzygy-Hub/syzygy-foundation-android/ci.yml?label=ci&style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-android/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-1.0.0-D85A30?style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-android/releases) [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
+[![Android](https://img.shields.io/badge/Android-Kotlin-7F77DD?style=flat)](https://developer.android.com/) [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-1D9E75?logo=kotlin&logoColor=white&style=flat)](https://kotlinlang.org) [![CI](https://img.shields.io/github/actions/workflow/status/Syzygy-Hub/syzygy-foundation-android/ci.yml?label=ci&style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-android/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-1.1.0-D85A30?style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-android/releases) [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Syzygy-Hub/.github/main/brand/syzygy-banner-dark-1200.png">
-  <img src="https://raw.githubusercontent.com/Syzygy-Hub/.github/main/brand/syzygy-banner-light-1200.png" alt="Syzygy" width="600">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Syzygy-Hub/.github/main/brand/assets/banners/syzygy-banner-dark-1200.png">
+  <img src="https://raw.githubusercontent.com/Syzygy-Hub/.github/main/brand/assets/banners/syzygy-banner-light-1200.png" alt="Syzygy" width="600">
 </picture>
 
 # syzygy-foundation-android
 
-Contracts, primitives, and shared types for the Android Syzygy ecosystem — zero implementation, zero dependencies.
+The root layer of the Syzygy ecosystem — providing SharedTypes, base protocols, and shared contracts that every peer layer builds on.
 
 ## About
 
 syzygy-foundation-android is the base layer every other Syzygy Android library depends on. It defines the interfaces that Services implements, the value types that UI and Core consume, and the error types the whole stack shares. Nothing in Foundation has behaviour beyond property storage — no network calls, no platform APIs, no business logic. Swap any implementation in Services or Core by conforming to these contracts; Foundation never needs to change.
+
+## Role in the Syzygy Ecosystem
+
+`syzygy-foundation-android` is the root layer — the only dependency shared by all peer layers. It depends on nothing. Every peer layer (UI, Core, Services, AI) depends on Foundation and nothing else.
+
+Full ecosystem architecture: [ecosystem-fragment.md](https://github.com/Syzygy-Hub/.github/blob/main/docs/ecosystem-fragment.md)
+
+### Shared Contracts
+
+Foundation defines the shared contracts that all peer layers consume. These contracts are the abstraction layer that allows UI, Core, Services and AI to each depend on Foundation without depending on each other.
+
+- **`NetworkClientProtocol`** — abstracts HTTP networking so any peer layer can make network requests without depending on a concrete implementation. `syzygy-services-android` provides the concrete OkHttp implementation.
+- **`AuthProvider`** — abstracts authentication and token management. `syzygy-services-android` provides the concrete OAuth and SharedPreferences implementations.
+- **`StorageProvider`** — abstracts local persistence. `syzygy-services-android` provides the concrete SharedPreferences implementation.
+- **`LoggerProtocol`** — abstracts logging and observability so all peer layers can log without depending on a specific logging framework.
+
+> These contracts are currently defined as planned interfaces. Concrete implementations will ship with `syzygy-services-android` in Phase 2 of the ecosystem roadmap.
+
+## Release Process
+
+Releases follow the Syzygy tag-push release flow:
+
+1. Create a `release/X.X.X` branch
+2. Bump the version in `syzygy.yml`, `build.gradle.kts` (`syzygyVersion` variable), the README badge, and `CHANGELOG.md`
+3. Open a PR to `main` and wait for CI to pass
+4. Merge the PR
+5. Push the tag: `git tag X.X.X` and `git push origin X.X.X`
+6. The tag push triggers the org-level release workflow which validates `syzygy.yml` matches the tag, extracts the CHANGELOG entry, and creates the GitHub Release. JitPack auto-builds from the tag.
+
+For the full release standard see the [Syzygy-Hub/.github release standard](https://github.com/Syzygy-Hub/.github/blob/main/engineering/standards/release-standard.md).
 
 ## Platforms
 
@@ -37,8 +67,8 @@ dependencyResolutionManagement {
 }
 
 // In build.gradle.kts
-implementation("com.github.Syzygy-Hub:syzygy-foundation-android:1.0.0")
-testImplementation("com.github.Syzygy-Hub:syzygy-foundation-android:1.0.0") // for testingSupport
+implementation("com.github.Syzygy-Hub:syzygy-foundation-android:1.1.0")
+testImplementation("com.github.Syzygy-Hub:syzygy-foundation-android:1.1.0") // for testingSupport
 ```
 
 ## Architecture
@@ -50,7 +80,7 @@ SyzygyFoundation exposes two source sets:
 
 **Depends on:** nothing
 
-**Used by:** syzygy-ui-android, syzygy-core-android, syzygy-services-android
+**Used by:** syzygy-ui-android, syzygy-core-android, syzygy-services-android, syzygy-ai-android
 
 For the full ecosystem architecture see [syzygy-ecosystem.md](https://github.com/Syzygy-Hub/.github/blob/main/engineering/architecture/syzygy-ecosystem.md).
 
@@ -154,19 +184,6 @@ fun `fetch returns data`() = runTest {
 ## Contributing
 
 Contributions are welcome. Please follow the [Syzygy engineering standards](https://github.com/Syzygy-Hub/.github/tree/main/engineering/standards) when submitting pull requests.
-
-## Releases
-
-Releases follow the Syzygy commit-message flow:
-
-1. Create branch `release/X.X.X`
-2. Bump version in manifest and `syzygy.yml`
-3. Update `CHANGELOG.md`
-4. Open PR → `main`
-5. Get approval and merge with commit message starting with **`release:`** (e.g. `release: 1.0.0`)
-6. CI detects the `release:` prefix → reads version from `syzygy.yml` → creates git tag and GitHub Release automatically
-
-See the [Syzygy Release Standard](https://github.com/Syzygy-Hub/.github/blob/main/engineering/standards/release-standard.md) for full details.
 
 ## License
 

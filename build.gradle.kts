@@ -4,8 +4,11 @@ plugins {
     id("maven-publish")
 }
 
+// Single canonical version source — bump only this value on each release.
+val syzygyVersion = "1.1.0"
+
 group = "com.github.Syzygy-Hub"
-version = "1.0.0"
+version = syzygyVersion
 
 kotlin {
     jvmToolchain(17)
@@ -77,13 +80,13 @@ publishing {
             from(components["java"])
             groupId = "com.github.Syzygy-Hub"
             artifactId = "syzygy-foundation-android"
-            version = "1.0.0"
+            version = syzygyVersion
             artifact(mainSourcesJar)
         }
         create<MavenPublication>("testingSupport") {
             groupId = "com.github.Syzygy-Hub"
             artifactId = "syzygy-foundation-android-testing"
-            version = "1.0.0"
+            version = syzygyVersion
             artifact(testingSupportJar)
             artifact(testingSupportSourcesJar)
         }
