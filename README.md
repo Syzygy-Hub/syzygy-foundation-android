@@ -1,4 +1,4 @@
-[![Android](https://img.shields.io/badge/Android-Kotlin-7F77DD?style=flat)](https://developer.android.com/) [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-1D9E75?logo=kotlin&logoColor=white&style=flat)](https://kotlinlang.org) [![CI](https://img.shields.io/github/actions/workflow/status/Syzygy-Hub/syzygy-foundation-android/ci.yml?label=ci&style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-android/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-1.1.0-D85A30?style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-android/releases) [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
+[![Android](https://img.shields.io/badge/Android-Kotlin-7F77DD?style=flat)](https://developer.android.com/) [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-1D9E75?logo=kotlin&logoColor=white&style=flat)](https://kotlinlang.org) [![CI](https://img.shields.io/github/actions/workflow/status/Syzygy-Hub/syzygy-foundation-android/ci.yml?label=ci&style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-android/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-1.2.0-D85A30?style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-android/releases) [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Syzygy-Hub/.github/main/brand/assets/banners/syzygy-banner-dark-1200.png">
@@ -67,8 +67,8 @@ dependencyResolutionManagement {
 }
 
 // In build.gradle.kts
-implementation("com.github.Syzygy-Hub:syzygy-foundation-android:1.1.0")
-testImplementation("com.github.Syzygy-Hub:syzygy-foundation-android:1.1.0") // for testingSupport
+implementation("com.github.Syzygy-Hub:syzygy-foundation-android:1.2.0")
+testImplementation("com.github.Syzygy-Hub:syzygy-foundation-android:1.2.0") // for testingSupport
 ```
 
 ## Architecture

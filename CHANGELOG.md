@@ -16,6 +16,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ---
 
+## [1.2.0] - 2026-09-18
+
+### Fixed
+- `SyzygyVersion.current` now correctly reports the declared library version (was hardcoded to 1.0.0 in prior releases)
+- Removed stray blank line in `AuthProvider.kt`
+
+### Changed
+- CI: aligned Java version to 21 across workflow jobs
+- CI: aligned Node version to 20 in release workflow
+
+---
+
 ## [1.1.0] — 2026-09-03
 
 ### Changed
