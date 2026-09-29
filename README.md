@@ -1,4 +1,4 @@
-[![Android](https://img.shields.io/badge/Android-Kotlin-7F77DD?style=flat)](https://developer.android.com/) [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-1D9E75?logo=kotlin&logoColor=white&style=flat)](https://kotlinlang.org) [![CI](https://img.shields.io/github/actions/workflow/status/Syzygy-Hub/syzygy-foundation-android/ci.yml?label=ci&style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-android/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-1.2.0-D85A30?style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-android/releases) [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
+[![Android](https://img.shields.io/badge/Android-Kotlin-7F77DD?style=flat)](https://developer.android.com/) [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-1D9E75?logo=kotlin&logoColor=white&style=flat)](https://kotlinlang.org) [![CI](https://img.shields.io/github/actions/workflow/status/Syzygy-Hub/syzygy-foundation-android/ci.yml?label=ci&style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-android/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-2.0.0-D85A30?style=flat)](https://github.com/Syzygy-Hub/syzygy-foundation-android/releases) [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Syzygy-Hub/.github/main/brand/assets/banners/syzygy-banner-dark-1200.png">
@@ -56,6 +56,16 @@ For the full release standard see the [Syzygy-Hub/.github release standard](http
 - Android Studio Ladybug or later
 - AGP 8.0+
 
+## Development Setup
+
+### JDK
+
+Local builds require **JDK 17**. The Gradle daemon JVM is pinned to JDK 17 via `gradle/gradle-daemon-jvm.properties`. Builds with JDK 25 are known to fail due to a Kotlin 2.0.21 version-parsing bug; JDK 21 (LTS) is also compatible.
+
+### Known Gradle Warnings
+
+A pre-existing **Gradle 10 deprecation warning** is emitted during configuration of the `ktlintCli` configuration — it is non-blocking and does not affect build correctness or test results. It will be resolved in a future Gradle 10 migration. This warning is tracked in `build.gradle.kts` with a dated TODO comment.
+
 ## Installation
 
 ```kotlin
@@ -67,15 +77,15 @@ dependencyResolutionManagement {
 }
 
 // In build.gradle.kts
-implementation("com.github.Syzygy-Hub:syzygy-foundation-android:1.2.0")
-testImplementation("com.github.Syzygy-Hub:syzygy-foundation-android:1.2.0") // for testingSupport
+api("com.github.Syzygy-Hub:syzygy-foundation-android:2.0.0")
+testImplementation("com.github.Syzygy-Hub:syzygy-foundation-android:2.0.0") // for testingSupport
 ```
 
 ## Architecture
 
 SyzygyFoundation exposes two source sets:
 
-- **main** — runtime contracts and primitives. Add as `implementation`.
+- **main** — runtime contracts and primitives. Add as `api` (transitive — Foundation types are visible to callers of dependent modules).
 - **testingSupport** — test support. Add as `testImplementation` only.
 
 **Depends on:** nothing
@@ -95,12 +105,44 @@ For the full ecosystem architecture see [syzygy-ecosystem.md](https://github.com
 
 ### Contracts
 
-- `NetworkClientProtocol` / `NetworkRequest` / `NetworkResponse` — networking contract
+#### NetworkClientProtocol
+
+```kotlin
+interface NetworkClientProtocol {
+    suspend fun execute(request: NetworkRequest): NetworkResponse
+    fun dispose()  // cancels in-flight requests and releases resources
+}
+```
+
+#### ConnectivityProvider
+
+```kotlin
+interface ConnectivityProvider {
+    val state: StateFlow<ConnectivityState>
+    val isConnected: Boolean
+    fun dispose()  // releases ConnectivityManager callbacks and resources
+}
+```
+
+#### AuthProvider
+
+```kotlin
+interface AuthProvider {
+    val state: StateFlow<AuthState>
+    fun authenticate(token: AuthToken)
+    suspend fun refresh(): AuthToken
+    fun signOut()
+    fun canUseBiometric(): Boolean
+    suspend fun authenticateWithBiometric(reason: String): Boolean
+    suspend fun refreshToken(): Boolean
+}
+```
+
+#### Other contracts
+
 - `StorageProvider` / `StorageKey` — type-safe storage contract
-- `AuthProvider` / `AuthToken` / `AuthState` — authentication contract
 - `AnalyticsProvider` / `AnalyticsEvent` — analytics contract
 - `LoggerProtocol` / `LogLevel` / `LogEntry` — logging contract
-- `ConnectivityProvider` / `ConnectivityState` — connectivity contract
 
 ### Shared Types
 
@@ -114,6 +156,27 @@ For the full ecosystem architecture see [syzygy-ecosystem.md](https://github.com
 - `SyzygyError` — base error interface
 - `SyzygyErrorCode` — typed, extensible error codes
 - `SyzygyErrorSeverity` — error severity levels
+- `SyzygyFoundationError` — typed error sealed class (v2.0.0)
+
+#### SyzygyFoundationError cases
+
+```kotlin
+sealed class SyzygyFoundationError(message: String, cause: Throwable? = null) : Exception(message, cause) {
+    class Network(cause: Throwable? = null)          // transport-level failures
+    class Authentication(cause: Throwable? = null)   // auth/token failures
+    object NotFound                                   // resource not found
+    object Timeout                                    // request timed out
+    object Cancelled                                  // operation was cancelled
+    class Unknown(cause: Throwable? = null)          // unclassified errors
+}
+```
+
+### Breaking Changes (v2.0.0)
+
+- `NetworkClientProtocol` now requires `fun dispose()` — all implementations must add this method
+- `ConnectivityProvider` now requires `fun dispose()` — all implementations must add this method
+- `AuthProvider` now requires `suspend fun refreshToken(): Boolean` — all implementations must add this method
+- `SyzygyFoundationError` is the new canonical typed error model — error-handling code should migrate to its cases
 
 ### Testing Support
 

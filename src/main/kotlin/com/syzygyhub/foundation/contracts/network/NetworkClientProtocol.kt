@@ -16,4 +16,9 @@ interface NetworkClientProtocol {
      * not exceptions.
      */
     suspend fun execute(request: NetworkRequest): NetworkResponse
+
+    /**
+     * Cancels in-flight requests and releases resources held by this client.
+     */
+    fun dispose()
 }

@@ -29,4 +29,6 @@ class MockNetworkClient : NetworkClientProtocol {
         error?.let { throw it }
         return responses.removeFirst()
     }
+
+    override fun dispose() {}
 }

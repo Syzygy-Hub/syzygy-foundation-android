@@ -16,6 +16,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ---
 
+## [2.0.0] - 2026-09-29
+
+### Added
+- `dispose()` added to `NetworkClientProtocol` — cancels in-flight requests and releases resources held by the client
+- `dispose()` added to `ConnectivityProvider` — releases `ConnectivityManager` callbacks and resources
+- `canUseBiometric()` added to `AuthProvider` — returns whether biometric authentication is available and enrolled
+- `authenticateWithBiometric(reason:)` added to `AuthProvider` — triggers the system biometric prompt and returns success/failure
+- `refreshToken()` added to `AuthProvider` — attempts to refresh the current access token; returns `Boolean` result
+- `SyzygyFoundationError` sealed class introduced as the typed error model — cases: `Network`, `Authentication`, `NotFound`, `Timeout`, `Cancelled`, `Unknown`
+- `MockNetworkClient` updated with no-op `dispose()` conformance
+- `MockConnectivityProvider` updated with no-op `dispose()` conformance
+- `MockAuthProvider` updated with `canUseBiometric()` → `false`, `authenticateWithBiometric(reason:)` → `false`, and `refreshToken()` → `refreshTokenResult` (default `false`) conformance
+- `ContractV2Tests` test class added — 13 tests covering all new v2.0.0 methods and all 6 `SyzygyFoundationError` cases
+
+### Changed
+- Gradle 10 forward-compatibility: replaced `by tasks.registering` / `by configurations.creating` delegates with `tasks.register<>()` / `configurations.create()` in `build.gradle.kts`
+
+### Breaking Changes
+- `NetworkClientProtocol` now declares `fun dispose()` — all concrete implementations must add this method
+- `ConnectivityProvider` now declares `fun dispose()` — all concrete implementations must add this method
+- `AuthProvider` now declares `suspend fun refreshToken(): Boolean` — all concrete implementations must add this method
+- `SyzygyFoundationError` replaces ad-hoc error throwing as the canonical typed error contract
+
+---
+
 ## [1.2.0] - 2026-09-18
 
 ### Fixed
@@ -121,6 +146,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 - CI coverage summary step added (test report path written to `GITHUB_STEP_SUMMARY`)
 - README rewritten to Syzygy engineering standard
 
-[Unreleased]: https://github.com/Syzygy-Hub/syzygy-foundation-android/compare/1.1.0...HEAD
+[Unreleased]: https://github.com/Syzygy-Hub/syzygy-foundation-android/compare/2.0.0...HEAD
+[2.0.0]: https://github.com/Syzygy-Hub/syzygy-foundation-android/compare/1.2.0...2.0.0
+[1.2.0]: https://github.com/Syzygy-Hub/syzygy-foundation-android/compare/1.1.0...1.2.0
 [1.1.0]: https://github.com/Syzygy-Hub/syzygy-foundation-android/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/Syzygy-Hub/syzygy-foundation-android/releases/tag/1.0.0

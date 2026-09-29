@@ -23,4 +23,7 @@ class MockConnectivityProvider(
     fun setState(newState: ConnectivityState) {
         _state.value = newState
     }
+
+    /** No-op implementation; provided for [ConnectivityProvider] conformance. */
+    override fun dispose() {}
 }
