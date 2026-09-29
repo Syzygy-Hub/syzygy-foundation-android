@@ -41,4 +41,23 @@ interface AuthProvider {
      * [AuthState.Unauthenticated].
      */
     fun signOut()
+
+    /**
+     * Returns true if biometric authentication is available and enrolled on this device.
+     */
+    fun canUseBiometric(): Boolean
+
+    /**
+     * Triggers the system biometric prompt with [reason]. Returns true on success, false on failure or cancellation.
+     */
+    suspend fun authenticateWithBiometric(reason: String): Boolean
+
+    /**
+     * Attempts to refresh the current access token using the stored refresh token.
+     *
+     * Suspends while the refresh is in progress.
+     *
+     * @return `true` if the token was successfully refreshed, `false` otherwise.
+     */
+    suspend fun refreshToken(): Boolean
 }

@@ -45,4 +45,13 @@ class MockAuthProvider : AuthProvider {
         signOutCallCount++
         _state.value = AuthState.Unauthenticated
     }
+
+    override fun canUseBiometric(): Boolean = false
+
+    override suspend fun authenticateWithBiometric(reason: String): Boolean = false
+
+    /** The value returned by the next [refreshToken] call. Defaults to false. */
+    var refreshTokenResult: Boolean = false
+
+    override suspend fun refreshToken(): Boolean = refreshTokenResult
 }

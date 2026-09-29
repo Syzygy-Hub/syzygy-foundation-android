@@ -24,4 +24,11 @@ interface ConnectivityProvider {
      * launching a coroutine.
      */
     val isConnected: Boolean
+
+    /**
+     * Releases any resources held by this provider (e.g. registered
+     * [ConnectivityManager] callbacks). Call when the provider is no longer
+     * needed to prevent resource leaks.
+     */
+    fun dispose()
 }

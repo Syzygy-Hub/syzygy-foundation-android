@@ -5,7 +5,7 @@ plugins {
 }
 
 // Single canonical version source — bump only this value on each release.
-val syzygyVersion = "1.2.0"
+val syzygyVersion = "2.0.0"
 
 group = "com.github.Syzygy-Hub"
 version = syzygyVersion
@@ -56,23 +56,26 @@ dependencies {
 // ---------------------------------------------------------------------------
 
 // Artifact for the main runtime source set (released to JitPack).
-val mainSourcesJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("sources")
-    from(sourceSets["main"].allSource)
-}
+val mainSourcesJar =
+    tasks.register<Jar>("mainSourcesJar") {
+        archiveClassifier.set("sources")
+        from(sourceSets["main"].allSource)
+    }
 
 // Artifact for the testingSupport source set (separate classifier; consumed
 // only in test/debug configurations by downstream modules).
-val testingSupportJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("testing-support")
-    from(sourceSets["testingSupport"].output)
-    dependsOn(tasks.named("compileTestingSupportKotlin"))
-}
+val testingSupportJar =
+    tasks.register<Jar>("testingSupportJar") {
+        archiveClassifier.set("testing-support")
+        from(sourceSets["testingSupport"].output)
+        dependsOn(tasks.named("compileTestingSupportKotlin"))
+    }
 
-val testingSupportSourcesJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("testing-support-sources")
-    from(sourceSets["testingSupport"].allSource)
-}
+val testingSupportSourcesJar =
+    tasks.register<Jar>("testingSupportSourcesJar") {
+        archiveClassifier.set("testing-support-sources")
+        from(sourceSets["testingSupport"].allSource)
+    }
 
 publishing {
     publications {
@@ -105,33 +108,40 @@ tasks.withType<Test> {
 // same approach used in syzygy-ui-android).
 // ---------------------------------------------------------------------------
 
-val ktlintCli: Configuration by configurations.creating
+// TODO(2026-09-29): Gradle 10 — configurations.create("ktlintCli") without declaring
+// isCanBeResolved/isCanBeConsumed triggers a deprecation warning about configuration
+// resolution mutability. Set isCanBeResolved = true and isCanBeConsumed = false when
+// migrating to Gradle 10.
+// Remove when migrating to Gradle 10. See: https://docs.gradle.org/current/userguide/upgrading_version_8.html
+val ktlintCli = configurations.create("ktlintCli")
 
 dependencies {
     ktlintCli("com.pinterest.ktlint:ktlint-cli:1.0.1")
 }
 
-val ktlintCheckSources by tasks.registering(JavaExec::class) {
-    group = "verification"
-    description = "Runs ktlint against src/main/**/*.kt and src/testingSupport/**/*.kt"
-    classpath = ktlintCli
-    mainClass.set("com.pinterest.ktlint.Main")
-    args = listOf("src/main/**/*.kt", "src/testingSupport/**/*.kt")
-    workingDir = project.projectDir
-}
+val ktlintCheckSources =
+    tasks.register<JavaExec>("ktlintCheckSources") {
+        group = "verification"
+        description = "Runs ktlint against src/main/**/*.kt and src/testingSupport/**/*.kt"
+        classpath = ktlintCli
+        mainClass.set("com.pinterest.ktlint.Main")
+        args = listOf("src/main/**/*.kt", "src/testingSupport/**/*.kt")
+        workingDir = project.projectDir
+    }
 
 tasks.named("ktlintCheck") {
     dependsOn(ktlintCheckSources)
 }
 
-val ktlintFormatSources by tasks.registering(JavaExec::class) {
-    group = "formatting"
-    description = "Auto-fixes ktlint violations in src/**/*.kt"
-    classpath = ktlintCli
-    mainClass.set("com.pinterest.ktlint.Main")
-    args = listOf("-F", "src/main/**/*.kt", "src/testingSupport/**/*.kt")
-    workingDir = project.projectDir
-}
+val ktlintFormatSources =
+    tasks.register<JavaExec>("ktlintFormatSources") {
+        group = "formatting"
+        description = "Auto-fixes ktlint violations in src/**/*.kt"
+        classpath = ktlintCli
+        mainClass.set("com.pinterest.ktlint.Main")
+        args = listOf("-F", "src/main/**/*.kt", "src/testingSupport/**/*.kt")
+        workingDir = project.projectDir
+    }
 
 tasks.named("ktlintFormat") {
     dependsOn(ktlintFormatSources)
