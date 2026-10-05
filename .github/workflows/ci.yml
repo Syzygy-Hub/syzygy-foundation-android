@@ -4,51 +4,10 @@ on:
   push:
     branches: ['**']
     tags-ignore: ['*']
-  pull_request:
-    branches: [main]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - uses: gradle/actions/setup-gradle@v4
-
-      - name: Fetch ktlint config
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/Syzygy-Hub/.github/main/engineering/tooling/android/.editorconfig \
-            -o .editorconfig
-
-      - name: Build
-        run: ./gradlew build
-
-      - name: ktlint check
-        run: ./gradlew ktlintCheck
-
-      - name: Test
-        run: ./gradlew test
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: build/reports/tests/test
-          if-no-files-found: warn
-
-      - name: Coverage summary
-        run: |
-          {
-            echo "## Test Results"
-            echo "Test report available in build artifacts."
-            echo "Run \`./gradlew test\` locally and open \`build/reports/tests/test/index.html\` to view."
-          } >> "$GITHUB_STEP_SUMMARY"
+  ci:
+    uses: Syzygy-Hub/.github/.github/workflows/android-ci.yml@main
+    with:
+      java_version: '17'
+      coverage: false
